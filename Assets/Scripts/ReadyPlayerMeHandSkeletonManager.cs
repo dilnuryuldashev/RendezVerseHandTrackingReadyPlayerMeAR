@@ -128,6 +128,8 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     /// <param name="previousModel">The previous model used</param>
     private void SkeletonModel(int modelToLoad, int previousModel)
     {
+
+        Debug.Log("Ready Player Me Hand Skeleton: SkeletonModel-------------------------------_!!!!!!!!!!!!!!!!!");
         if (avatarHandJoints[modelToLoad].gameObjects.Length == jointsLength)
         {
             _listOfJoints.Clear();
