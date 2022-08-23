@@ -37,7 +37,8 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
 
     ///The prefab that will be used for visualization of the joints 
     [SerializeField]
-    private GameObject[] jointPrefab;
+    //private GameObject[] jointPrefab;
+    private GameObject[] avatarHandJoints;
 
     ///The linerenderes used on the joints in the jointPrefabs
     private LineRenderer[] lineRenderers = new LineRenderer[6];
@@ -64,7 +65,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     /// </summary>
     bool isRightHand = false;
 
-    private GameObject skeletonParent;
+    public GameObject skeletonParent;
 
     private void Start()
     {
@@ -87,19 +88,25 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Creates a parent object for the skeleton models. The SkeletonParent will update the rotation as the AR Camera so the joints will be correct even if the device is tilted or rotated.
-    /// </summary>
-    private void CreateSkeletonParent()
-    {
-        skeletonParent = new GameObject();
-        skeletonParent.name = "SkeletonParent";
+    ///// <summary>
+    ///// Creates a parent object for the skeleton models. The SkeletonParent will update the rotation as the AR Camera so the joints will be correct even if the device is tilted or rotated.
+    ///// </summary>
+    //private void CreateSkeletonParent()
+    //{
+    //    skeletonParent = new GameObject();
+    //    skeletonParent.name = "SkeletonParent";
 
-        for (int i = 0; i < jointPrefab.Length; i++)
-        {
-            jointPrefab[i] = Instantiate(jointPrefab[i], skeletonParent.transform);
-        }
-    }
+    //    //for (int i = 0; i < jointPrefab.Length; i++)
+    //    //{
+    //    //    jointPrefab[i] = Instantiate(jointPrefab[i], skeletonParent.transform);
+    //    //}
+
+    //    for (int i = 0; i < avatarHandJoints.Length; i++)
+    //    {
+    //        jointPrefab[i] = Instantiate(jointPrefab[i], skeletonParent.transform);
+    //        ava
+    //    }
+    //}
 
     /// <summary>
     /// Create the hand model depending if you use 3D or 2D joints.
