@@ -1,6 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public class GameObjectArray
+{
+    public GameObject [] gameObjects;
+}
 /*
  * This class was copied from SkeletonManager of ManoMotion
  * Skeleton Manager applies hand tracking info to the hand points (21)
@@ -38,7 +44,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     ///The prefab that will be used for visualization of the joints 
     [SerializeField]
     //private GameObject[] jointPrefab;
-    private GameObject[] avatarHandJoints;
+    private GameObjectArray[] avatarHandJoints;
 
     ///The linerenderes used on the joints in the jointPrefabs
     private LineRenderer[] lineRenderers = new LineRenderer[6];
@@ -64,7 +70,6 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     /// Used to set the current hand detected by the camera.
     /// </summary>
     bool isRightHand = false;
-
     public GameObject skeletonParent;
 
     private void Start()
@@ -74,7 +79,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
 
     void Inititialize()
     {
-        CreateSkeletonParent();
+        //CreateSkeletonParent();
 
         SkeletonModel(0, 1);
 
@@ -87,6 +92,13 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
             jointsMaterial[i].color = tempColor;
         }
     }
+
+    //for now, we should only test with the Right hand
+    //I wonder how adding the left and right hands to a parent game object
+    //affects the Avatar rig.
+    //For instance, what happens when the left hand is rotated
+    //the right hand ends up rotating too, I guess
+    //We shall see
 
     ///// <summary>
     ///// Creates a parent object for the skeleton models. The SkeletonParent will update the rotation as the AR Camera so the joints will be correct even if the device is tilted or rotated.
@@ -116,43 +128,50 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     /// <param name="previousModel">The previous model used</param>
     private void SkeletonModel(int modelToLoad, int previousModel)
     {
-        if (jointPrefab[modelToLoad].transform.childCount == jointsLength)
+        if (avatarHandJoints[modelToLoad].gameObjects.Length == jointsLength)
         {
             _listOfJoints.Clear();
 
-            jointPrefab[previousModel].SetActive(false);
-            jointPrefab[modelToLoad].SetActive(true);
+            //Let's see if we should disable anything
+            //I think these models somehow try to toggle
+            //between the left and right hands
+            //avatarHandJoints[previousModel].SetActive(false);
+            //avatarHandJoints[modelToLoad].SetActive(true);
 
-            for (int i = 0; i < jointPrefab[modelToLoad].transform.childCount; i++)
+            for (int i = 0; i < avatarHandJoints[modelToLoad].gameObjects.Length; i++)
             {
-                _listOfJoints.Add(jointPrefab[modelToLoad].transform.GetChild(i).gameObject);
+                _listOfJoints.Add(avatarHandJoints[modelToLoad].gameObjects[i].gameObject);
             }
 
-            lineRenderers = new LineRenderer[6];
-            lineRenderers = (jointPrefab[modelToLoad].GetComponentsInChildren<LineRenderer>());
-            ResetLineRenderers();
+            //Let's not deal with Line Renderers for now
+            //lineRenderers = new LineRenderer[6];
+            //lineRenderers = (jointPrefab[modelToLoad].GetComponentsInChildren<LineRenderer>());
+            //ResetLineRenderers();
         }
 
         else
         {
-            Debug.LogFormat("Current model have {0} joints, need to have 21 joints", jointPrefab[modelToLoad].transform.childCount);
-        }
-    }
-
-    /// <summary>
-    /// Reset the Linerenders when changing Skeleton Model 2D/3D
-    /// </summary>
-    private void ResetLineRenderers()
-    {
-        foreach (var item in lineRenderers)
-        {
-            item.enabled = true;
-            item.positionCount = 0;
-            item.positionCount = 4;
+            Debug.LogFormat("Current model have {0} joints, need to have 21 joints", avatarHandJoints[modelToLoad].gameObjects.Length);
         }
 
-        lineRenderers[1].positionCount = 6;
+
+
     }
+
+    ///// <summary>
+    ///// Reset the Linerenders when changing Skeleton Model 2D/3D
+    ///// </summary>
+    //private void ResetLineRenderers()
+    //{
+    //    foreach (var item in lineRenderers)
+    //    {
+    //        item.enabled = true;
+    //        item.positionCount = 0;
+    //        item.positionCount = 4;
+    //    }
+
+    //    lineRenderers[1].positionCount = 6;
+    //}
 
 
     void Update()
