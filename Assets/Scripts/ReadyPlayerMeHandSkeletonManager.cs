@@ -274,6 +274,12 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
                     jointsMaterial[i].color = tempColor;
                 }
             }
+            Vector3 jointZeroPos = Vector3.zero;
+
+            for (int i = 0; i < trackingInfo.skeleton.joints.Length; i++)
+            {
+
+            }
 
             for (int i = 0; i < trackingInfo.skeleton.joints.Length; i++)
             {
@@ -295,8 +301,16 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
                 }
 
                 Vector3 newPosition3d = ManoUtils.Instance.CalculateNewPositionSkeletonJointDepth(new Vector3(trackingInfo.skeleton.joints[i].x, trackingInfo.skeleton.joints[i].y, trackingInfo.skeleton.joints[i].z), depthEstimation);
+                if (i == 0)
+                {
+                    //convert the global space joint #0 position to local space
+                    jointZeroPos = newPosition3d; //_listOfJoints[i].transform.InverseTransformPoint(newPosition3d - _listOfJoints[i].transform.position); //we do not change the position of the hand
+                }
+                else
+                {
 
-                _listOfJoints[i].transform.position = newPosition3d;
+                    _listOfJoints[i].transform.localPosition = _listOfJoints[0].transform.localPosition + (newPosition3d - jointZeroPos);// - _listOfJoints[0].transform.position; //need to offset it by the hand position(joint #0)
+                }
             }
         }
 
