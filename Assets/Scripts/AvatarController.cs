@@ -31,10 +31,28 @@ public class MapTransform
         IKTarget.rotation = vrTarget.rotation * Quaternion.Euler(trackingRotationOffset);
     }
 }
+
+[System.Serializable]
+public class MapTransformFinger
+{
+    public Transform vrTarget;
+    //public Transform vrTargetRotation;
+    public Transform IKTarget;
+    public Vector3 trackingPositionOffset;
+    public Vector3 trackingRotationOffset;
+
+    public void MapVRAvatar()
+    {
+        IKTarget.position = vrTarget.TransformPoint(trackingPositionOffset);
+        IKTarget.rotation = vrTarget.rotation * Quaternion.Euler(trackingRotationOffset);
+    }
+}
 public class AvatarController : MonoBehaviour
 {
     [SerializeField] private MapTransformHead head;
     [SerializeField] private MapTransform leftHand;
+    [SerializeField] private MapTransformFinger [] leftHandFingers;
+
     //[SerializeField] private MapTransform rightHand;
 
     [SerializeField] private float turnSmoothness;
@@ -58,5 +76,9 @@ public class AvatarController : MonoBehaviour
         head.MapVRAvatar();
         leftHand.MapVRAvatar();
         //rightHand.MapVRAvatar();
+        foreach (var fingerMap in leftHandFingers)
+        {
+            fingerMap.MapVRAvatar();
+        }
     }
 }
