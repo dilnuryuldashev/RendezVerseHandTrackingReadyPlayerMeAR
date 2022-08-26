@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [System.Serializable]
@@ -34,7 +35,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
         }
     }
     #endregion
-
+    public Transform jointZero;
     private TrackingInfo trackingInfo;
 
     [HideInInspector]
@@ -50,7 +51,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     private LineRenderer[] lineRenderers = new LineRenderer[6];
 
     ///used to clamp the depth value
-    private float clampMinDepth = 0.4f;
+    private float clampMinDepth = 0.1f;
 
     ///Skeleton confidence
     private bool hasConfidence;
@@ -61,7 +62,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     private Material[] jointsMaterial;
 
     ///Use this to make the depth values smaler to fit the depth of the hand. 
-    private int depthDivider = 10;
+    private float depthDivider = 20;
 
     /// The number of Joints the skeleton is made of.
     private int jointsLength = 21;
@@ -71,7 +72,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
     /// </summary>
     bool isRightHand = false;
     public GameObject skeletonParent;
-
+    public TextMeshProUGUI depthText;
     private void Start()
     {
         Inititialize();
@@ -181,6 +182,7 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
         hasConfidence = ManomotionManager.Instance.Hand_infos[0].hand_info.tracking_info.skeleton.confidence > skeletonConfidenceThreshold;
         trackingInfo = ManomotionManager.Instance.Hand_infos[0].hand_info.tracking_info;
         skeletonParent.transform.rotation = Camera.main.transform.rotation;
+        //jointZero.position = trackingInfo.wristInfo.left_point;
 
         UpdateJointPositions();
         LeftOrRightHand();
@@ -252,6 +254,10 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
                 Vector3 newRotation = new Vector3(xRotation, yRotation, zRotation);
 
                 _listOfJoints[i].transform.localEulerAngles = newRotation;
+                if (i == 0)
+                {
+                    jointZero.eulerAngles = newRotation;
+                }
             }
         }
     }
@@ -275,12 +281,15 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
                 }
             }
             Vector3 jointZeroPos = Vector3.zero;
-
-            for (int i = 0; i < trackingInfo.skeleton.joints.Length; i++)
+            float depthEst = Mathf.Clamp(trackingInfo.depth_estimation, clampMinDepth, 1);
+            Vector3 newPosition3dJointZero = ManoUtils.Instance.CalculateNewPositionSkeletonJointDepth(new Vector3(trackingInfo.skeleton.joints[0].x, trackingInfo.skeleton.joints[0].y, trackingInfo.skeleton.joints[0].z), depthEst);
+            Vector3 newPosition3dJointOne = ManoUtils.Instance.CalculateNewPositionSkeletonJointDepth(new Vector3(trackingInfo.skeleton.joints[1].x, trackingInfo.skeleton.joints[1].y, trackingInfo.skeleton.joints[1].z), depthEst);
+            if (depthText.text == "")
             {
+                depthDivider =  Vector3.Distance(newPosition3dJointOne, newPosition3dJointZero) / Vector3.Distance(avatarHandJoints[0].gameObjects[0].transform.position, avatarHandJoints[0].gameObjects[1].transform.position);
+                depthText.text = "Depth = " + depthDivider;
 
             }
-
             for (int i = 0; i < trackingInfo.skeleton.joints.Length; i++)
             {
                 float depthEstimation = Mathf.Clamp(trackingInfo.depth_estimation, clampMinDepth, 1);
@@ -301,8 +310,14 @@ public class ReadyPlayerMeHandSkeletonManager : MonoBehaviour
                 }
 
                 Vector3 newPosition3d = ManoUtils.Instance.CalculateNewPositionSkeletonJointDepth(new Vector3(trackingInfo.skeleton.joints[i].x, trackingInfo.skeleton.joints[i].y, trackingInfo.skeleton.joints[i].z), depthEstimation);
+                //_listOfJoints[i].transform.position = newPosition3d/3;
+
+
+
                 if (i == 0)
                 {
+                    jointZero.position = new Vector3(newPosition3d.x, newPosition3d.y, trackingInfo.depth_estimation);
+
                     //convert the global space joint #0 position to local space
                     jointZeroPos = newPosition3d; //_listOfJoints[i].transform.InverseTransformPoint(newPosition3d - _listOfJoints[i].transform.position); //we do not change the position of the hand
                 }
