@@ -44,7 +44,7 @@ public class MapTransformFinger
     public void MapVRAvatar()
     {
         IKTarget.position = vrTarget.TransformPoint(trackingPositionOffset);
-        IKTarget.rotation = vrTarget.rotation * Quaternion.Euler(trackingRotationOffset);
+        //IKTarget.rotation = vrTarget.rotation * Quaternion.Euler(trackingRotationOffset);
     }
 }
 public class AvatarController : MonoBehaviour
