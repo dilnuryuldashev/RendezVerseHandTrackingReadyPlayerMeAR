@@ -1560,6 +1560,7 @@ GameObject:
   - component: {fileID: 157089622}
   - component: {fileID: 157089621}
   - component: {fileID: 157089620}
+  - component: {fileID: 157089624}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -1638,7 +1639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FocusMode: -1
   m_LightEstimationMode: -1
-  m_AutoFocus: 1
+  m_AutoFocus: 0
   m_LightEstimation: 0
   m_FacingDirection: 1
 --- !u!114 &157089622
@@ -1674,6 +1675,18 @@ Transform:
   m_Father: {fileID: 1179032830}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &157089624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157089618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd00618db1ae4c1ba222232b43ab705, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &163355992
 GameObject:
   m_ObjectHideFlags: 0
