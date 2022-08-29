@@ -4,6 +4,10 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Handles the visualization of the skeleton joints.
+/// This class is a copy of Skeleton Manager.
+/// I copied it and modified to produce hand tracking data
+/// that could be mapped to the hands of the avatar
+/// Most of the comments are from the original class
 /// </summary>
 public class SkeletonManagerCopy : MonoBehaviour
 {
@@ -224,10 +228,6 @@ public class SkeletonManagerCopy : MonoBehaviour
                 Vector3 newRotation = new Vector3(xRotation, yRotation, zRotation);
 
                 _listOfJoints[i].transform.localEulerAngles = newRotation;
-                //if (i == 0)
-                //{
-                //    jointZero.eulerAngles = newRotation;
-                //}
             }
         }
     }
@@ -273,13 +273,6 @@ public class SkeletonManagerCopy : MonoBehaviour
                 Vector3 newPosition3d = ManoUtils.Instance.CalculateNewPositionSkeletonJointDepth(new Vector3(trackingInfo.skeleton.joints[i].x, trackingInfo.skeleton.joints[i].y, trackingInfo.skeleton.joints[i].z), depthEstimation);
 
                 _listOfJoints[i].transform.position = newPosition3d;
-                //if (i == 0)
-                //{
-                //    jointZero.position = new Vector3(newPosition3d.x, newPosition3d.y, trackingInfo.depth_estimation);
-
-                //    //convert the global space joint #0 position to local space
-                //    //jointZeroPos = newPosition3d; //_listOfJoints[i].transform.InverseTransformPoint(newPosition3d - _listOfJoints[i].transform.position); //we do not change the position of the hand
-                //}
             }
         }
 
